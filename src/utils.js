@@ -1,4 +1,4 @@
-const propNames = new Set(["id", "className", "textContent", "onclick"]);
+const propNames = new Set(['id', 'className', 'textContent', 'onclick']);
 
 /**
  * Создание элемента со свойствами и вложенными элементами
