@@ -1,6 +1,6 @@
 import React from 'react';
 import {createRoot} from 'react-dom/client';
-import {createElement, counter} from './utils.js';
+import {counter} from './utils.js';
 import App from './app.js';
 import Store from './store.js';
 import {DEFAULT_COUNT} from './constants.js';
