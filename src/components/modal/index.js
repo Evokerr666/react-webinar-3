@@ -1,30 +1,38 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React from 'react';
+import PropTypes from 'prop-types';
 import './style.css';
-import Head from "../head";
-import { totalPrice } from "../../utils";
+import Head from '../head';
+import Footer from '../footer';
 
-function Modal({
-  active,
-  onClose,
-  children,
-  modalTitle,
-  basket,
-  onDeleteItem,
-}) {
+function Modal({active, onClose, children, modalTitle, basket}) {
   return (
-    <div className={active ? "modal active" : "modal"} onClick={onClose}>
+    <div className={active ? 'Modal active' : 'Modal'} onClick={onClose}>
       <div
-        className={active ? "modal__content active" : "modal__content"}
+        className={active ? 'Modal_content  active' : 'Modal_content'}
         onClick={(e) => e.stopPropagation()}
       >
-        <Head title={modalTitle}></Head>
+        <Head
+          title={modalTitle}
+          actions={[{ title: 'Закрыть', id: 'close', action: onClose }]}
+          className={'Head-modal'}
+        />
         {children}
-        <button onClick={onClose}>Закрыть</button>
-        <div className="Modal-price">Итого: {`${totalPrice(basket)} ₽`}</div>
+        <Footer basket={basket} />
       </div>
     </div>
   );
 }
 
-export default Modal;
+Modal.propTypes = {
+  active: PropTypes.bool,
+  onClose: PropTypes.func,
+  basket: PropTypes.arrayOf(PropTypes.object).isRequired,
+  modalTitle: PropTypes.string,
+  children: PropTypes.node,
+};
+
+Modal.defaultProps = {
+  onClose: () => {},
+};
+
+export default React.memo(Modal);

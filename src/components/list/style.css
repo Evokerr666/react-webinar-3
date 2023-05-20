@@ -1,7 +1,7 @@
-.List{
-
+.List {
+  
 }
 
-.List-item {
+.List__item {
   border-bottom: 1px dashed #ccc;
 }

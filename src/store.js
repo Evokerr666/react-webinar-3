@@ -1,5 +1,4 @@
-import {generateCode} from "./utils";
-
+import {sortByField} from './utils';
 /**
  * Хранилище состояния приложения
  */
@@ -41,7 +40,7 @@ class Store {
   }
 
   /**
-   * Добавление новой записи
+   * Добавление новой записи либо увеличение счётчика в текущей
    */
   addItem(item) {
     if (!this.state.basket?.length) {
@@ -57,7 +56,7 @@ class Store {
       } else {
         basket.push({ ...item, count: 1 });
       }
-
+      basket.sort(sortByField("code"));
       this.setState({
         ...this.state,
         basket: basket,

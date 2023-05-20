@@ -1,9 +1,34 @@
 .Head {
+  display: flex;
+  justify-content: space-between;
   height: 80px;
   background: #f5f5f5;
 }
 
 .Head h1 {
+  margin: 0;
+  padding: 20px 20px 10px;
+}
+
+.Head-button {
+  height: 21px;
+  width: 76px;
+  left: 0px;
+  top: 0px;
+  margin-right: 32px;
+  margin-top: 32px;
+}
+
+.Head-modal {
+  display: flex;
+  justify-content: space-between;
+  border-radius: 10px 10px 0px 0px;
+  height: 150px;
+  background: linear-gradient(to bottom, #f5f5f5 80px, transparent 0%);
+  border-bottom: 1px dashed #ccc;
+}
+
+.Head-modal h1 {
   margin: 0;
   padding: 20px 20px 10px;
 }

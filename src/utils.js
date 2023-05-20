@@ -22,13 +22,18 @@ export function plural(value, variants = {}, locale = 'ru-RU') {
  * @returns {Number}
  */
 export function generateCode() {
-  return generateCode.value ? ++generateCode.value : generateCode.value = 1;
+  return generateCode.value ? ++generateCode.value : (generateCode.value = 1);
 }
 
 //Счётчик общей стоимости
 export function totalPrice(list) {
   const totalPrice = list.reduce((acc, item) => {
-      return acc + item.price * item.count;
+    return acc + item.price * item.count;
   }, 0);
-  return totalPrice
+  return totalPrice;
+}
+
+//Функция сортировки массива объектов по возрастанию значения поля объекта
+export function sortByField(field) {
+  return (a, b) => a[field] > b[field] ? 1 : -1;
 }

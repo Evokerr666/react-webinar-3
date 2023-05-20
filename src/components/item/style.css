@@ -4,11 +4,6 @@
   transition: background-color 1s;
 }
 
-.Item_selected {
-  background: #75aaf1;
-  color: #fff;
-}
-
 .Item-code {
   padding: 20px 10px 20px 20px;
 }
@@ -18,15 +13,29 @@
   padding: 20px 10px;
 }
 
-.Item-actions {
+.Item-delete {
+  height: 22px;
+  width: 76px;
+  margin: 20px 20px 20px 0px;
+}
+
+.Item-add {
+  height: 22px;
+  width: 76px;
+  margin: 20px 20px 20px 0px;
+}
+
+.Item-count {
+  width: 90px;
+  height: 22px;
+  padding: 20px 24px 20px 0px;
   display: flex;
-  justify-content: flex-end;
-  padding: 20px 20px 20px 0px;
+  justify-content: end;
 }
 
 .Item-price {
   width: 20%;
-  padding: 20px 20px 24px 0px;
+  padding: 20px 48px 20px 0px;
   display: flex;
   justify-content: end;
 }
