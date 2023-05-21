@@ -3,6 +3,8 @@ import List from './components/list';
 import Controls from './components/controls';
 import Head from './components/head';
 import PageLayout from './components/page-layout';
+import Modal from './components/modal';
+import Footer from './components/footer';
 
 /**
  * Приложение
@@ -12,23 +14,21 @@ import PageLayout from './components/page-layout';
 function App({ store }) {
   const list = store.getState().list;
   const modalActive = store.getState().modalActive;
+  const totalPrice = store.getState().totalPrice;
   const basket = store.getState().basket;
   const callbacks = {
     onDeleteItem: useCallback(
-      (code) => {
-        store.deleteItem(code);
+      (code, price, count) => {
+        store.deleteItem(code, price, count);
       },
       [store]
     ),
-
     onOpenModal: useCallback(() => {
       store.openModal();
-    }, [store, modalActive]),
-
+    }, [store]),
     onCloseModal: useCallback(() => {
       store.closeModal();
-    }, [store, modalActive]),
-
+    }, [store]),
     onAddItem: useCallback(
       (item) => {
         store.addItem(item);
@@ -36,17 +36,25 @@ function App({ store }) {
       [store]
     ),
   };
-
   return (
     <PageLayout>
-      <Head title='Магазин' className={'Head'} />
+      <Head title="Магазин" className={"Head"} />
       <Controls
         onOpen={callbacks.onOpenModal}
-        onClose={callbacks.onCloseModal}
-        active={modalActive}
-        basket={basket}
-        onDeleteItem={callbacks.onDeleteItem}
+        basketCount={basket?.length}
+        totalPrice={totalPrice}
       />
+      <Modal onClose={callbacks.onCloseModal} active={modalActive}>
+        <Head
+          title={"Корзина"}
+          actions={[
+            { title: "Закрыть", id: "close", action: callbacks.onCloseModal },
+          ]}
+          className={"Head-modal"}
+        />
+        <List list={basket} onDeleteItem={callbacks.onDeleteItem} />
+        <Footer totalPrice={totalPrice} />
+      </Modal>
       <List list={list} onAddItem={callbacks.onAddItem} />
     </PageLayout>
   );

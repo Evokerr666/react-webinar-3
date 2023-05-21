@@ -1,4 +1,3 @@
-import {sortByField} from './utils';
 /**
  * Хранилище состояния приложения
  */
@@ -47,6 +46,7 @@ class Store {
       this.setState({
         ...this.state,
         basket: [{ ...item, count: 1 }],
+        totalPrice: item.price,
       });
     } else {
       const basket = [...this.state.basket];
@@ -56,10 +56,15 @@ class Store {
       } else {
         basket.push({ ...item, count: 1 });
       }
-      basket.sort(sortByField("code"));
+      //Сортировка корзины по возрастанию индекса
+      basket.sort((a, b) => a["code"] > b["code"] ? 1 : -1);
+      const totalPrice = basket.reduce((acc, item) => {
+        return acc + item.price * item.count;
+      }, 0);
       this.setState({
         ...this.state,
         basket: basket,
+        totalPrice: totalPrice
       });
     }
   }
@@ -67,21 +72,22 @@ class Store {
    * Удаление записи по коду
    * @param code
    */
-  deleteItem(code) {
+  deleteItem(code, price, count) {
+    
     this.setState({
       ...this.state,
       // Новый список, в котором не будет удаляемой записи
       basket: this.state.basket.filter((item) => item.code !== code),
+      totalPrice: this.state.totalPrice - Number(price*count), 
+      
     });
   }
-
   openModal() {
     this.setState({
       ...this.state,
       modalActive: true,
     });
   }
-
   closeModal() {
     this.setState({
       ...this.state,

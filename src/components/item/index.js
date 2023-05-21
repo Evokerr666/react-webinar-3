@@ -2,17 +2,22 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import './style.css';
 import { cn as bem } from '@bem-react/classname';
+import { numFormatter } from '/utils';
 
 function Item(props) {
-  
   const cn = bem('Item');
-
   const renderButton = () => {
     if (props.item.count) {
       return (
         <button
-          className={cn('delete')}
-          onClick={() => props.onDeleteItem(props.item.code)}
+          className={cn("delete")}
+          onClick={() =>
+            props.onDeleteItem(
+              props.item.code,
+              props.item.price,
+              props.item.count
+            )
+          }
         >
           Удалить
         </button>
@@ -24,12 +29,11 @@ function Item(props) {
       </button>
     );
   };
-
   return (
     <div className={cn()}>
       <div className={cn('code')}>{props.item.code}</div>
       <div className={cn('title')}>{props.item.title}</div>
-      <div className={cn('price')}>{`${props.item.price} ₽`}</div>
+      <div className={cn('price')}>{`${numFormatter(props.item.price)} ₽`}</div>
       {props.item.count && (
         <div className={cn('count')}>{`${props.item.count} шт`}</div>
       )}
@@ -54,6 +58,7 @@ Item.defaultProps = {
   onAddItem: () => {},
   onDeleteItem: () => {},
   renderButton: () => {},
+  numFormatter: () => {},
 };
 
 export default React.memo(Item);

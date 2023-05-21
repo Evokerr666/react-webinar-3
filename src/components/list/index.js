@@ -28,6 +28,7 @@ List.propTypes = {
 List.defaultProps = {
   onAddItem: () => {},
   onDeleteItem: () => {},
+  list: [],
 };
 
 export default React.memo(List);
