@@ -8,6 +8,11 @@
 .Head h1 {
   margin: 0;
   padding: 20px 20px 10px;
+  font-family: "Arial";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 37px;
 }
 
 .Head-button {
@@ -17,6 +22,9 @@
   top: 0px;
   margin-right: 32px;
   margin-top: 32px;
+  font-size: 13px;
+  line-height: 15px;
+  text-align: center;
 }
 
 .Head-modal {
@@ -31,4 +39,9 @@
 .Head-modal h1 {
   margin: 0;
   padding: 20px 20px 10px;
+  font-family: "Arial";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 37px;
 }

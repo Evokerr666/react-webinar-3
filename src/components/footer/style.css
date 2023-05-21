@@ -1,21 +1,17 @@
 .Footer {
   display: flex;
   justify-content: flex-start;
+  font-family: 'Arial';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 21px;
 }
 
 .Footer-name {
-  display: flex;
-  font-family: 'Arial';
-  font-style: normal;
-  font-weight: 700;
-  font-size: 18px;
-  padding: 20px 0px 89px 690px;
+  padding: 20px 0px 90px 690px;
 }
 
 .Footer-price {
-  font-family: 'Arial';
-  font-style: normal;
-  font-weight: 700;
-  font-size: 18px;
-  padding: 20px 0px 89px 52px;
+  padding: 20px 0px 90px 52px;
 }
