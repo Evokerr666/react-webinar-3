@@ -1,4 +1,4 @@
-import {memo, useCallback, useEffect} from 'react';
+import { memo, useCallback, useEffect } from "react";
 import Item from "../../components/item";
 import PageLayout from "../../components/page-layout";
 import Head from "../../components/head";
@@ -6,42 +6,76 @@ import BasketTool from "../../components/basket-tool";
 import List from "../../components/list";
 import useStore from "../../store/use-store";
 import useSelector from "../../store/use-selector";
+import Pagination from "../../components/pagination";
 
 function Main() {
-
   const store = useStore();
 
   useEffect(() => {
     store.actions.catalog.load();
   }, []);
 
-  const select = useSelector(state => ({
+  const select = useSelector((state) => ({
     list: state.catalog.list,
     amount: state.basket.amount,
-    sum: state.basket.sum
+    sum: state.basket.sum,
+    count: state.catalog.count,
+    current: state.catalog.current,
   }));
 
   const callbacks = {
     // Добавление в корзину
-    addToBasket: useCallback(_id => store.actions.basket.addToBasket(_id), [store]),
+    addToBasket: useCallback(
+      (_id) => store.actions.basket.addToBasket(_id),
+      [store]
+    ),
     // Открытие модалки корзины
-    openModalBasket: useCallback(() => store.actions.modals.open('basket'), [store]),
-  }
+    openModalBasket: useCallback(
+      () => store.actions.modals.open("basket"),
+      [store]
+    ),
+    openModalItemCard: useCallback(
+
+      () => store.actions.modals.open("itemCard"),
+      [store]
+    ),
+    onLoad: useCallback(
+      async (id) => await store.actions.catalog.load(id),
+      [store]
+    ),
+  };
 
   const renders = {
-    item: useCallback((item) => {
-      return <Item item={item} onAdd={callbacks.addToBasket}/>
-    }, [callbacks.addToBasket]),
+    item: useCallback(
+      (item) => {
+        return (
+          <Item
+            item={item}
+            onAdd={callbacks.addToBasket}
+            onOpen={callbacks.openModalItemCard}
+          />
+        );
+      },
+      [callbacks.addToBasket]
+    ),
   };
 
   return (
     <PageLayout>
-      <Head title='Магазин'/>
-      <BasketTool onOpen={callbacks.openModalBasket} amount={select.amount}
-                  sum={select.sum}/>
-      <List list={select.list} renderItem={renders.item}/>
+      {/* <Head title=LANG[currentLang]['shop']/> в константе LANG объект с парами ключ-значение, оттуда дёргаем строку*/}
+      <Head title="Магазин" />
+      <BasketTool
+        onOpen={callbacks.openModalBasket}
+        amount={select.amount}
+        sum={select.sum}
+      />
+      <List list={select.list} renderItem={renders.item} />
+      <Pagination
+        currentPage={select.current}
+        totalCount={select.count}
+        onLoad={callbacks.onLoad}
+      />
     </PageLayout>
-
   );
 }
 
