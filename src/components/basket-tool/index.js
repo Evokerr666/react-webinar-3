@@ -5,7 +5,7 @@ import { numberFormat, plural } from "../../utils";
 import { Link } from "react-router-dom";
 import "./style.css";
 
-function BasketTool({ sum, amount, onOpen, onClose }) {
+function BasketTool({ sum, amount, onOpen }) {
   const cn = bem("BasketTool");
   return (
     <div className={cn()}>
@@ -29,12 +29,14 @@ function BasketTool({ sum, amount, onOpen, onClose }) {
 
 BasketTool.propTypes = {
   onOpen: PropTypes.func.isRequired,
+  onLoad: PropTypes.func.isRequired,
   sum: PropTypes.number,
   amount: PropTypes.number,
 };
 
 BasketTool.defaultProps = {
   onOpen: () => {},
+  onLoad: () => {},
   sum: 0,
   amount: 0,
 };

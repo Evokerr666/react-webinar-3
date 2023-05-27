@@ -1,9 +1,12 @@
 import React from "react";
+import PropTypes from 'prop-types';
+import {cn as bem} from '@bem-react/classname';
 import { usePagination, DOTS } from "../../store/use-pagination";
 import "./style.css";
 
 const Pagination = (props) => {
-  const { onLoad, siblingCount = 1, totalCount, currentPage } = props;
+  const cn = bem('Pagination');
+  const { onLoad, siblingCount, totalCount, currentPage } = props;
   const paginationRange = usePagination({
     currentPage,
     totalCount,
@@ -13,16 +16,16 @@ const Pagination = (props) => {
     return null;
   }
   return (
-    <div className="pagination-container">
+    <div className={cn()}>
       {paginationRange.map((pageNumber) => {
         if (pageNumber === DOTS) {
-          return <div className="pagination-item-dots">{DOTS}</div>;
+          return <div className={cn("item-dots")}>{DOTS}</div>;
         }
         return (
           <div
-            className={`pagination-item ${
+            className={cn(`item ${
               currentPage == pageNumber ? "active" : ""
-            }`}
+            }`)}
             selected={pageNumber === currentPage}
             onClick={() => onLoad(pageNumber)}
           >
@@ -32,6 +35,18 @@ const Pagination = (props) => {
       })}
     </div>
   );
+};
+
+Pagination.propTypes = {
+  totalCount: PropTypes.number,
+  currentPage: PropTypes.number,
+  siblingCount: PropTypes.number,
+  onLoad: PropTypes.func,
+};
+
+Pagination.defaultProps = {
+  siblingCount: 1,
+  onLoad: () => {},
 };
 
 export default Pagination;

@@ -34,11 +34,6 @@ function Main() {
       () => store.actions.modals.open("basket"),
       [store]
     ),
-    openModalItemCard: useCallback(
-
-      () => store.actions.modals.open("itemCard"),
-      [store]
-    ),
     onLoad: useCallback(
       async (id) => await store.actions.catalog.load(id),
       [store]
@@ -52,7 +47,6 @@ function Main() {
           <Item
             item={item}
             onAdd={callbacks.addToBasket}
-            onOpen={callbacks.openModalItemCard}
           />
         );
       },

@@ -14,8 +14,8 @@ function ItemBasket(props) {
 
   return (
     <div className={cn()}>
-      <Link to={`item-page/${props.item._id}`} className={cn("title")}>
-        <div onClick={() => props.onOpen()}>{props.item.title}</div>
+      <Link to={`item-page/${props.item._id}`} className={cn("title")} onClick={() => props.onOpen()}>
+        <div>{props.item.title}</div>
       </Link>
       <div className={cn("right")}>
         <div className={cn("cell")}>{numberFormat(props.item.price)} ₽</div>
@@ -38,10 +38,12 @@ ItemBasket.propTypes = {
     amount: PropTypes.number
   }).isRequired,
   onRemove: propTypes.func,
+  onOpen: propTypes.func,
 }
 
 ItemBasket.defaultProps = {
   onRemove: () => {},
+  onOpen: () => {},
 }
 
 export default memo(ItemBasket);

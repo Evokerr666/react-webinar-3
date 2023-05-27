@@ -12,11 +12,11 @@ function ItemPage() {
   const params = useParams();
   useEffect(() => {
     callbacks.onLoadArticle(params.id)
-  }, [])
+  }, [params.id])
   const select = useSelector((state) => ({
     description: state.catalog.currentArticle.description,
     madeIn: state.catalog.currentArticle.madeIn,
-    category: state.catalog.currentArticle.category,
+    category: state.catalog.currentArticle.category?.title,
     edition: state.catalog.currentArticle.edition,
     price: state.catalog.currentArticle.price,
     amount: state.basket.amount,
@@ -34,6 +34,7 @@ function ItemPage() {
       () => store.actions.modals.open("basket"),
       [store]
     ),
+    // Загрузка информации о товаре
     onLoadArticle: useCallback(
       async (id) => await store.actions.catalog.loadById(id),
       [store]
@@ -50,8 +51,10 @@ function ItemPage() {
         onClose={callbacks.closeModal}
         amount={select.amount}
         sum={select.sum}
+        onLoad={callbacks.onLoad}
       />
       <ItemInfo
+        id={params.id}
         description={select.description}
         madeIn={select.madeIn}
         category={select.category}

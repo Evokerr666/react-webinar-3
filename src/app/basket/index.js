@@ -31,7 +31,7 @@ function Basket() {
       [store]
     ),
     openModalItemCard: useCallback(
-      () => store.actions.modals.open("itemCard"),
+      () => store.actions.modals.open("itemBasket"),
       [store]
     ),
   };

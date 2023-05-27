@@ -6,14 +6,13 @@ const range = (start, end) => {
   let length = end - start + 1;
   return Array.from({ length }, (_, id) => id + start);
 };
-
 export const usePagination = ({
   totalCount,
-  siblingCount = 1,
+  siblingCount,
   currentPage,
 }) => {
   const paginationRange = useMemo(() => {
-    const totalPageCount = Math.floor(totalCount / 10);
+    const totalPageCount = Math.ceil(totalCount / 10);
     const totalPageNumbers = siblingCount + 5;
     /*
       Если количество страниц меньше, чем номера страниц, которые мы хотим показать в нашем
@@ -27,7 +26,7 @@ export const usePagination = ({
       currentPage + siblingCount,
       totalPageCount
     );
-    //Определяем с какого и до какого момента должны показываться многоточие
+    //Определяем с какого и до какого момента должны показываться многоточии
     const shouldShowLeftDots = leftSiblingIndex > 2;
     const shouldShowRightDots = rightSiblingIndex < totalPageCount - 1;
     const firstPageIndex = 1;
@@ -51,6 +50,5 @@ export const usePagination = ({
       return [firstPageIndex, DOTS, ...middleRange, DOTS, lastPageIndex];
     }
   }, [totalCount, siblingCount, currentPage]);
-
   return paginationRange;
 };

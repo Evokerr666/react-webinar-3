@@ -5,21 +5,24 @@ import { numberFormat } from "../../utils";
 import "./style.css";
 
 function ItemInfo(props) {
-  const { description, /* madeIn */ /* category, */ edition, price, onAdd } =
-    props;
+  const { description, madeIn, category, edition, price, id } = props;
   const cn = bem("Item-info");
   const callbacks = {
-    onAdd: (e) => props.onAdd(props.item._id)
-  }
+    onAdd: (e) => props.onAdd(id),
+  };
 
   return (
     <div className={cn()}>
       <div className={cn("description")}>{description}</div>
       <div className={cn("description")}>
-        Страна производитель:<span className="bold">{/* madeIn */}</span>
+        Страна производитель:
+        <span className="bold">
+          {madeIn?.title}
+          {` (${madeIn?.code})`}
+        </span>
       </div>
       <div className={cn("description")}>
-        Категория:<span className="bold">{/* category */}</span>
+        Категория:<span className="bold">{category}</span>
       </div>
       <div className={cn("description")}>
         Год выпуска:<span className="bold">{edition}</span>
@@ -31,5 +34,22 @@ function ItemInfo(props) {
     </div>
   );
 }
+
+ItemInfo.propTypes = {
+  madeIn: PropTypes.shape({
+    title: PropTypes.string,
+    code: PropTypes.string,
+  }).isRequired,
+  description: PropTypes.string,
+  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  category: PropTypes.string,
+  title: PropTypes.string,
+  price: PropTypes.number,
+  amount: PropTypes.number,
+};
+
+ItemInfo.defaultProps = {
+  onAdd: () => {},
+};
 
 export default memo(ItemInfo);

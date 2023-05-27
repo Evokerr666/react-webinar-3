@@ -29,7 +29,7 @@ class Catalog extends StoreModule {
   }
 
   async loadById(id) {
-    const response = await fetch(`/api/v1/articles/${id}`);
+    const response = await fetch(`/api/v1/articles/${id}?fields=*,madeIn(title,code),category(title)`);
     const json = await response.json();
     this.setState({
        ...this.getState(),
