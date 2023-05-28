@@ -19,10 +19,10 @@ const Pagination = (props) => {
     <div className={cn()}>
       {paginationRange.map((pageNumber) => {
         if (pageNumber === DOTS) {
-          return <div className={cn("item-dots")}>{DOTS}</div>;
+          return <div key = {Math.floor(Math.random() * 100000)} className={cn("item-dots")}>{DOTS}</div>;
         }
         return (
-          <div
+          <div key = {pageNumber}
             className={cn(`item ${
               currentPage == pageNumber ? "active" : ""
             }`)}

@@ -2,8 +2,10 @@ import { memo } from "react";
 import PropTypes from "prop-types";
 import { cn as bem } from "@bem-react/classname";
 import { numberFormat } from "../../utils";
-import "./style.css";
 import { Link } from "react-router-dom";
+import { TRANSLATE_LIST } from "../../store/language/translate-list";
+import "./style.css";
+
 
 function Item(props) {
   const cn = bem("Item");
@@ -18,7 +20,7 @@ function Item(props) {
       </Link>
       <div className={cn("actions")}>
         <div className={cn("price")}>{numberFormat(props.item.price)} ₽</div>
-        <button onClick={callbacks.onAdd}>Добавить</button>
+        <button onClick={callbacks.onAdd}>{TRANSLATE_LIST?.[props.lang]?.add}</button>
       </div>
     </div>
   );
@@ -31,6 +33,7 @@ Item.propTypes = {
     price: PropTypes.number,
   }).isRequired,
   onAdd: PropTypes.func,
+  lang: PropTypes.string,
 };
 
 Item.defaultProps = {

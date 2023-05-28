@@ -1,9 +1,10 @@
-import {memo, useCallback} from 'react';
+import {memo} from 'react';
 import propTypes from 'prop-types';
 import {numberFormat} from "../../utils";
 import {cn as bem} from "@bem-react/classname";
 import PropTypes from "prop-types";
 import { Link } from 'react-router-dom';
+import { TRANSLATE_LIST } from "../../store/language/translate-list";
 import './style.css';
 
 function ItemBasket(props) {
@@ -20,10 +21,10 @@ function ItemBasket(props) {
       <div className={cn("right")}>
         <div className={cn("cell")}>{numberFormat(props.item.price)} ₽</div>
         <div className={cn("cell")}>
-          {numberFormat(props.item.amount || 0)} шт
+          {numberFormat(props.item.amount || 0)} {TRANSLATE_LIST?.[props.lang]?.pc}
         </div>
         <div className={cn("cell")}>
-          <button onClick={callbacks.onRemove}>Удалить</button>
+          <button onClick={callbacks.onRemove}>{TRANSLATE_LIST?.[props.lang]?.delete}</button>
         </div>
       </div>
     </div>
@@ -39,6 +40,7 @@ ItemBasket.propTypes = {
   }).isRequired,
   onRemove: propTypes.func,
   onOpen: propTypes.func,
+  lang: PropTypes.string,
 }
 
 ItemBasket.defaultProps = {

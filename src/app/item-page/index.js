@@ -6,6 +6,7 @@ import useSelector from "../../store/use-selector";
 import PageLayout from "../../components/page-layout";
 import Head from "../../components/head";
 import { useParams } from "react-router-dom";
+import { TRANSLATE_LIST } from "../../store/language/translate-list";
 
 function ItemPage() {
   const store = useStore();
@@ -15,12 +16,14 @@ function ItemPage() {
   }, [params.id])
   const select = useSelector((state) => ({
     description: state.catalog.currentArticle.description,
-    madeIn: state.catalog.currentArticle.madeIn,
+    country: state.catalog.currentArticle.madeIn?.title,
+    countryCode: state.catalog.currentArticle.madeIn?.code,
     category: state.catalog.currentArticle.category?.title,
     edition: state.catalog.currentArticle.edition,
     price: state.catalog.currentArticle.price,
     amount: state.basket.amount,
     sum: state.basket.sum,
+    lang: state.language.language,
   }));
 
   const callbacks = {
@@ -41,26 +44,32 @@ function ItemPage() {
     ),
     // Закрытие любой модалки
     closeModal: useCallback(() => store.actions.modals.close(), [store]),
+    onLangChange: useCallback(
+      () => store.actions.language.onLangChange(event.target.value),
+      [store]
+    ),
   };
 
   return (
     <PageLayout>
-      <Head title="Название товара" />
+      <Head title={TRANSLATE_LIST?.[select.lang]?.productName} lang={select.lang} onLangChange={callbacks.onLangChange}/>
       <BasketTool
         onOpen={callbacks.openModalBasket}
         onClose={callbacks.closeModal}
         amount={select.amount}
         sum={select.sum}
-        onLoad={callbacks.onLoad}
+        lang={select.lang}
       />
       <ItemInfo
         id={params.id}
         description={select.description}
-        madeIn={select.madeIn}
+        country={select.country}
+        countryCode={select.countryCode}
         category={select.category}
         edition={select.edition}
         price={select.price}
         onAdd={callbacks.addToBasket}
+        lang={select.lang}
       />
     </PageLayout>
   );
