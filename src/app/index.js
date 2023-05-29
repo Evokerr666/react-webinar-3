@@ -18,7 +18,6 @@ function App() {
           <Route index element={<Main />}/>
           <Route path={`item-page/:id`} element={<ItemPage />} />
         </Route>
-        
       </Routes>
       <Outlet />
       {activeModal === "basket" && <Basket />}

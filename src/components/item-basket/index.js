@@ -4,7 +4,6 @@ import {numberFormat} from "../../utils";
 import {cn as bem} from "@bem-react/classname";
 import PropTypes from "prop-types";
 import { Link } from 'react-router-dom';
-import { TRANSLATE_LIST } from "../../store/language/translate-list";
 import './style.css';
 
 function ItemBasket(props) {
@@ -15,16 +14,16 @@ function ItemBasket(props) {
 
   return (
     <div className={cn()}>
-      <Link to={`item-page/${props.item._id}`} className={cn("title")} onClick={() => props.onOpen()}>
+      <Link to={`${props.path}${props.item._id}`} className={cn("title")} onClick={() => props.onOpen()}>
         <div>{props.item.title}</div>
       </Link>
       <div className={cn("right")}>
         <div className={cn("cell")}>{numberFormat(props.item.price)} ₽</div>
         <div className={cn("cell")}>
-          {numberFormat(props.item.amount || 0)} {TRANSLATE_LIST?.[props.lang]?.pc}
+          {numberFormat(props.item.amount || 0)} {props.countField}
         </div>
         <div className={cn("cell")}>
-          <button onClick={callbacks.onRemove}>{TRANSLATE_LIST?.[props.lang]?.delete}</button>
+          <button onClick={callbacks.onRemove}>{props.delete}</button>
         </div>
       </div>
     </div>
@@ -41,11 +40,15 @@ ItemBasket.propTypes = {
   onRemove: propTypes.func,
   onOpen: propTypes.func,
   lang: PropTypes.string,
+  path: PropTypes.string,
+  countField: PropTypes.string,
+  delete: PropTypes.string,
 }
 
 ItemBasket.defaultProps = {
   onRemove: () => {},
   onOpen: () => {},
+  path: 'item-page/',
 }
 
 export default memo(ItemBasket);

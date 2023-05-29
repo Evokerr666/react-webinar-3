@@ -1,31 +1,33 @@
-import { memo, useCallback, useEffect } from "react";
+import { memo, useCallback, useEffect, useState } from "react";
 import ItemInfo from "../../components/item-info";
-import BasketTool from "../../components/basket-tool";
 import useStore from "../../store/use-store";
 import useSelector from "../../store/use-selector";
 import PageLayout from "../../components/page-layout";
 import Head from "../../components/head";
+import MenuBox from "../../components/menu-box";
+import Loader from "../../components/loader";
 import { useParams } from "react-router-dom";
-import { TRANSLATE_LIST } from "../../store/language/translate-list";
+import { TRANSLATE_LIST } from "../../constants/translate-list";
 
 function ItemPage() {
   const store = useStore();
+  const [isLoading, setIsLoading] = useState(true);
   const params = useParams();
   useEffect(() => {
-    callbacks.onLoadArticle(params.id)
-  }, [params.id])
+    setIsLoading(true);
+    async function loading() {
+      await callbacks.onLoadArticle(params.id);
+      setIsLoading(false);
+    }
+    loading();
+  }, [params.id]);
   const select = useSelector((state) => ({
-    description: state.catalog.currentArticle.description,
-    country: state.catalog.currentArticle.madeIn?.title,
-    countryCode: state.catalog.currentArticle.madeIn?.code,
-    category: state.catalog.currentArticle.category?.title,
-    edition: state.catalog.currentArticle.edition,
-    price: state.catalog.currentArticle.price,
+    title: state.item.currentArticle.title,
+    item: state.item.currentArticle,
     amount: state.basket.amount,
     sum: state.basket.sum,
     lang: state.language.language,
   }));
-
   const callbacks = {
     // Добавление в корзину
     addToBasket: useCallback(
@@ -39,7 +41,7 @@ function ItemPage() {
     ),
     // Загрузка информации о товаре
     onLoadArticle: useCallback(
-      async (id) => await store.actions.catalog.loadById(id),
+      async (id) => await store.actions.item.loadById(id),
       [store]
     ),
     // Закрытие любой модалки
@@ -52,25 +54,37 @@ function ItemPage() {
 
   return (
     <PageLayout>
-      <Head title={TRANSLATE_LIST?.[select.lang]?.productName} lang={select.lang} onLangChange={callbacks.onLangChange}/>
-      <BasketTool
+      <Head
+        title={select.title}
+        lang={select.lang}
+        onLangChange={callbacks.onLangChange}
+      />
+      <MenuBox
         onOpen={callbacks.openModalBasket}
-        onClose={callbacks.closeModal}
         amount={select.amount}
         sum={select.sum}
-        lang={select.lang}
+        home={TRANSLATE_LIST?.[select.lang]?.home}
+        inBasket={TRANSLATE_LIST?.[select.lang]?.inBasket}
+        oneProduct={TRANSLATE_LIST?.[select.lang]?.oneProduct}
+        fewProduct={TRANSLATE_LIST?.[select.lang]?.fewProduct}
+        manyProduct={TRANSLATE_LIST?.[select.lang]?.manyProduct}
+        emptyBasket={TRANSLATE_LIST?.[select.lang]?.emptyBasket}
+        goTo={TRANSLATE_LIST?.[select.lang]?.goTo}
       />
-      <ItemInfo
-        id={params.id}
-        description={select.description}
-        country={select.country}
-        countryCode={select.countryCode}
-        category={select.category}
-        edition={select.edition}
-        price={select.price}
-        onAdd={callbacks.addToBasket}
-        lang={select.lang}
-      />
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <ItemInfo
+          id={params.id}
+          item={select.item}
+          onAdd={callbacks.addToBasket}
+          countryField={TRANSLATE_LIST?.[select.lang]?.country}
+          categoryField={TRANSLATE_LIST?.[select.lang]?.category}
+          editionField={TRANSLATE_LIST?.[select.lang]?.manufactured}
+          priceField={TRANSLATE_LIST?.[select.lang]?.price}
+          add={TRANSLATE_LIST?.[select.lang]?.add}
+        />
+      )}
     </PageLayout>
   );
 }

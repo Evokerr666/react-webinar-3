@@ -1,14 +1,15 @@
 import React from "react";
 import PropTypes from 'prop-types';
 import {cn as bem} from '@bem-react/classname';
-import { usePagination, DOTS } from "../../store/use-pagination";
+import { utilPagination, DOTS } from "../../store/util-pagination";
 import "./style.css";
 
 const Pagination = (props) => {
   const cn = bem('Pagination');
-  const { onLoad, siblingCount, totalCount, currentPage } = props;
-  const paginationRange = usePagination({
+  const { onLoad, siblingCount, totalCount, currentPage, itemsOnPage } = props;
+  const paginationRange = utilPagination({
     currentPage,
+    itemsOnPage,
     totalCount,
     siblingCount,
   });
@@ -42,6 +43,7 @@ Pagination.propTypes = {
   currentPage: PropTypes.number,
   siblingCount: PropTypes.number,
   onLoad: PropTypes.func,
+  itemsOnPage: PropTypes.number,
 };
 
 Pagination.defaultProps = {

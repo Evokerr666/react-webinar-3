@@ -13,12 +13,18 @@ class Catalog extends StoreModule {
       list: [],
       current: 0,
       currentArticle: {},
+      itemsOnPage: 10,
     }
   }
 
-  async load(id) {
-    const currentPage = id || 1 
-    const response = await fetch(`/api/v1/articles?limit=10&skip=${currentPage*10-10}&fields=items(_id, title, price),count`);
+  async load(id, itemsOnPage) {
+    itemsOnPage = this.getState().itemsOnPage
+    const currentPage = id || 1;
+    const response = await fetch(
+      `/api/v1/articles?limit=${itemsOnPage}&skip=${
+        currentPage * itemsOnPage - itemsOnPage
+      }&fields=items(_id, title, price),count`
+    );
     const json = await response.json();
     this.setState({
        ...this.getState(),
@@ -26,15 +32,6 @@ class Catalog extends StoreModule {
        count: json.result.count,
        current: currentPage,
     }, 'Загружены товары из АПИ');
-  }
-
-  async loadById(id) {
-    const response = await fetch(`/api/v1/articles/${id}?fields=*,madeIn(title,code),category(title)`);
-    const json = await response.json();
-    this.setState({
-       ...this.getState(),
-       currentArticle: json.result
-    }, 'Загружено описание товара из API');
   }
 }
 

@@ -2,11 +2,18 @@ import { memo } from "react";
 import PropTypes from "prop-types";
 import { cn as bem } from "@bem-react/classname";
 import { numberFormat } from "../../utils";
-import { TRANSLATE_LIST } from "../../store/language/translate-list";
 import "./style.css";
 
 function ItemInfo(props) {
-  const { description, country, countryCode, category, edition, price, id, lang } = props;
+  const {
+    description = props.item.description,
+    country = props.item.madeIn?.title,
+    countryCode = props.item.madeIn?.code,
+    category = props.item.category?.title,
+    edition = props.item.edition,
+    price = props.item.price,
+    id,
+  } = props;
   const cn = bem("Item-info");
   const callbacks = {
     onAdd: (e) => props.onAdd(id),
@@ -16,21 +23,21 @@ function ItemInfo(props) {
     <div className={cn()}>
       <div className={cn("description")}>{description}</div>
       <div className={cn("description")}>
-      {TRANSLATE_LIST?.[lang]?.country}:
+      {props.countryField}:
         <span className="bold">
           {country}
           {` (${countryCode})`}
         </span>
       </div>
       <div className={cn("description")}>
-      {TRANSLATE_LIST?.[lang]?.category}:<span className="bold">{category}</span>
+      {props.categoryField}:<span className="bold">{category}</span>
       </div>
       <div className={cn("description")}>
-      {TRANSLATE_LIST?.[lang]?.manufactured}:<span className="bold">{edition}</span>
+      {props.editionField}:<span className="bold">{edition}</span>
       </div>
-      <div className={cn("price")}>{TRANSLATE_LIST?.[lang]?.price}{`: ${numberFormat(price)} ₽`}</div>
+      <div className={cn("price")}>{props.priceField}{`: ${numberFormat(price)} ₽`}</div>
       <button className={cn("button")} onClick={callbacks.onAdd}>
-      {TRANSLATE_LIST?.[lang]?.add}
+      {props.add}
       </button>
     </div>
   );
@@ -45,7 +52,11 @@ ItemInfo.propTypes = {
   title: PropTypes.string,
   price: PropTypes.number,
   amount: PropTypes.number,
-  lang: PropTypes.string,
+  countryField: PropTypes.string,
+  categoryField: PropTypes.string,
+  editionField: PropTypes.string,
+  priceField: PropTypes.string,
+  add: PropTypes.string,
 };
 
 ItemInfo.defaultProps = {

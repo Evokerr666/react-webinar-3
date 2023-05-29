@@ -1,8 +1,5 @@
 /* Контрол с общими действиями */
 .BasketTool {
-  display: flex;
-  position: relative;
-  justify-content: flex-end;
   padding: 20px;
   font-size: 18px;
 }

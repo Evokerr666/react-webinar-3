@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import { cn as bem } from "@bem-react/classname";
 import { numberFormat } from "../../utils";
 import { Link } from "react-router-dom";
-import { TRANSLATE_LIST } from "../../store/language/translate-list";
 import "./style.css";
 
 
@@ -15,12 +14,12 @@ function Item(props) {
 
   return (
     <div className={cn()}>
-      <Link to={`item-page/${props.item._id}`} className={cn("title")}>
+      <Link to={`${props.path}${props.item._id}`} className={cn("title")}>
         <div>{props.item.title}</div>
       </Link>
       <div className={cn("actions")}>
         <div className={cn("price")}>{numberFormat(props.item.price)} ₽</div>
-        <button onClick={callbacks.onAdd}>{TRANSLATE_LIST?.[props.lang]?.add}</button>
+        <button onClick={callbacks.onAdd}>{props.add}</button>
       </div>
     </div>
   );
@@ -34,10 +33,13 @@ Item.propTypes = {
   }).isRequired,
   onAdd: PropTypes.func,
   lang: PropTypes.string,
+  path: PropTypes.string,
+  add: PropTypes.string,
 };
 
 Item.defaultProps = {
   onAdd: () => {},
+  path: 'item-page/',
 };
 
 export default memo(Item);

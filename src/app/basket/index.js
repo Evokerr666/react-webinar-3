@@ -5,7 +5,7 @@ import ModalLayout from "../../components/modal-layout";
 import BasketTotal from "../../components/basket-total";
 import useStore from "../../store/use-store";
 import useSelector from "../../store/use-selector";
-import { TRANSLATE_LIST } from "../../store/language/translate-list";
+import { TRANSLATE_LIST } from "../../constants/translate-list";
 
 function Basket() {
   const store = useStore();
@@ -27,7 +27,7 @@ function Basket() {
     // Закрытие любой модалки
     closeModal: useCallback(() => store.actions.modals.close(), [store]),
     onLoadArticle: useCallback(
-      async (id) => await store.actions.catalog.loadById(id),
+      async (id) => await store.actions.item.loadById(id),
       [store]
     ),
     openModalItemCard: useCallback(
@@ -45,7 +45,9 @@ function Basket() {
             onRemove={callbacks.removeFromBasket}
             onLoad={callbacks.onLoadArticle}
             onOpen={callbacks.openModalItemCard}
-            lang={select.lang}
+            countField={TRANSLATE_LIST?.[select.lang]?.pc}
+            delete={TRANSLATE_LIST?.[select.lang]?.delete}
+            path={'item-page/'}
           />
         );
       },
@@ -57,10 +59,10 @@ function Basket() {
     <ModalLayout
       title={TRANSLATE_LIST?.[select.lang]?.basket}
       onClose={callbacks.closeModal}
-      lang={select.lang}
+      close={TRANSLATE_LIST?.[select.lang]?.close}
     >
       <List list={select.list} renderItem={renders.itemBasket} />
-      <BasketTotal sum={select.sum} lang={select.lang} />
+      <BasketTotal sum={select.sum} total={TRANSLATE_LIST?.[select.lang]?.total}/>
     </ModalLayout>
   );
 }
