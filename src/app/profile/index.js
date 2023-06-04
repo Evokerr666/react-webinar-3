@@ -16,12 +16,10 @@ function Profile() {
   const navigate = useNavigate();
   useInit(
     () => {
-      console.log('useInit');
       const token = localStorage.getItem("userToken");
       if (!token && !select.user) {
         navigate("/login");
       }
-      store.actions.catalog.initParams();
     },
     [],
     true
@@ -29,6 +27,7 @@ function Profile() {
 
   const select = useSelector((state) => ({
     user: state.profile.data,
+    waiting: state.profile.waiting,
   }));
 
   const callbacks = {
@@ -44,7 +43,7 @@ function Profile() {
       <AuthBar
         user={select.user}
         signOut={callbacks.signOut}
-        profileLink={`/profile`}
+        profileLink={`/profile/${select.user?._id}`}
         loginLink={`/login`}
         t={t}
       />

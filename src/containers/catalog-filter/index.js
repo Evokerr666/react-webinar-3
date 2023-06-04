@@ -5,6 +5,7 @@ import useSelector from "../../hooks/use-selector";
 import Select from "../../components/select";
 import Input from "../../components/input";
 import SideLayout from "../../components/side-layout";
+import { createCategoryList } from "../../utils";
 
 function CatalogFilter() {
 
@@ -13,8 +14,9 @@ function CatalogFilter() {
   const select = useSelector(state => ({
     sort: state.catalog.params.sort,
     query: state.catalog.params.query,
+    category: state.catalog.params.category,
+    categoryList: state.category.data,
   }));
-
   const callbacks = {
     // Сортировка
     onSort: useCallback(sort => store.actions.catalog.setParams({sort}), [store]),
@@ -22,21 +24,27 @@ function CatalogFilter() {
     onSearch: useCallback(query => store.actions.catalog.setParams({query, page: 1}), [store]),
     // Сброс
     onReset: useCallback(() => store.actions.catalog.resetParams(), [store]),
+    // Категория
+    onCategoryChange: useCallback(category => store.actions.catalog.setParams({category}), [store]),
   };
 
   const options = {
+    categoryList: useMemo(() => 
+    createCategoryList(select.categoryList),
+    [select.categoryList]),
     sort: useMemo(() => ([
       {value: 'order', title: 'По порядку'},
       {value: 'title.ru', title: 'По именованию'},
       {value: '-price', title: 'Сначала дорогие'},
       {value: 'edition', title: 'Древние'},
-    ]), [])
+    ]), []),
   };
 
   const {t} = useTranslate();
 
   return (
     <SideLayout padding='medium'>
+      <Select options={[{value: 'all', title: 'Все'}, ...options.categoryList]} value={select.category} onChange={callbacks.onCategoryChange}/>
       <Select options={options.sort} value={select.sort} onChange={callbacks.onSort}/>
       <Input value={select.query} onChange={callbacks.onSearch} placeholder={'Поиск'}
              delay={1000}/>
@@ -46,3 +54,5 @@ function CatalogFilter() {
 }
 
 export default memo(CatalogFilter);
+
+

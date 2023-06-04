@@ -6,7 +6,6 @@ import "./style.css";
 
 function AuthBar(props) {
   const cn = bem("AuthBar");
-  console.log("props.user.username", props.user?.profile.name, props.user);
   return (
     <div className={cn()}>
       {props.user ? (

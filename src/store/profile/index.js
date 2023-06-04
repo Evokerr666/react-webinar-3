@@ -36,7 +36,6 @@ class ProfileState extends StoreModule {
       } else {
         // Получили токен
         localStorage.setItem("userToken", json.result.token);
-        console.log("sign ok", json.result.user);
         callbackBySuccess();
         this.setState(
           {
@@ -55,12 +54,21 @@ class ProfileState extends StoreModule {
     }
   }
 
-  signOut() {
+  //Выход пользователя по токену
+  async signOut() {
+    const token = localStorage.getItem("userToken");
     this.setState({
       ...this.getState(),
       waiting: true,
     });
     try {
+      await fetch(`/api/v1/users/sign`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Token": token,
+        },
+      });
       localStorage.removeItem("userToken");
       this.setState({
         ...this.getState(),
@@ -77,7 +85,6 @@ class ProfileState extends StoreModule {
 
   //Получение пользователя по токену
   async getUserById() {
-    console.log("2", this.getState().data);
     if (!this.getState().data) {
       this.setState({
         ...this.getState(),
@@ -85,7 +92,6 @@ class ProfileState extends StoreModule {
       });
       try {
         const token = localStorage.getItem("userToken");
-        console.log("token", token);
         const response = await fetch("/api/v1/users/self", {
           headers: {
             "Content-Type": "application/json",
@@ -94,10 +100,8 @@ class ProfileState extends StoreModule {
         });
         const json = await response.json();
         if (!response.ok) {
-          console.log("getUserById NOT OK");
           throw json.error.data.issues;
         } else {
-          console.log("getUserById OK", json.result.user);
           const token = localStorage.getItem("userToken");
           if (!token) {
             localStorage.setItem("userToken", json.result.token);
@@ -118,6 +122,17 @@ class ProfileState extends StoreModule {
       }
     }
   }
+
+//Сброс ошибки
+ resetError() {
+  if (this.getState().errors) {
+    this.setState({
+      ...this.getState(),
+      errors: [],
+    });
+  }
+}
+
 }
 
 export default ProfileState;

@@ -17,7 +17,6 @@ function Article() {
 
   // Параметры из пути /articles/:id
   const params = useParams();
-
   useInit(() => {
     store.actions.article.load(params.id);
   }, [params.id]);
@@ -40,7 +39,7 @@ function Article() {
 
   return (
     <PageLayout>
-      <AuthBar user={select.user} signOut={callbacks.signOut} profileLink={`/profile`} loginLink={`/login`} t={t}/>
+      <AuthBar user={select.user} signOut={callbacks.signOut} profileLink={`/profile/${select.user?._id}`} loginLink={`/login`} t={t}/>
       <Head title={select.article.title}>
         <LocaleSelect/>
       </Head>
