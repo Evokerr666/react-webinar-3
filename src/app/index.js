@@ -16,11 +16,13 @@ import useStore from "src/hooks/use-store";
 function App() {
   const activeModal = useSelector((state) => state.modals.name);
   const select = useSelector(state => ({
-    user: state.profile.data,
+    user: state.auth.data,
+    waiting: state.auth.waiting,
   }))
+
   const store = useStore();
   useInit(() => {
-    store.actions.profile.getUserById();
+    store.actions.auth.getUserById();
   }, [], true)
   
   return (
@@ -31,8 +33,8 @@ function App() {
           element={<Main />}
         />
         <Route path={"/articles/:id"} element={<Article />} />
-        <Route path={"/login"} element={select.user ? <Navigate to="/profile/:id"/> : <Login />} />
-        <Route path={"/profile/:id"} element={!select.user ? <Navigate to="/login"/> : <Profile />} />
+        <Route path={"/login"} element={select.user ? <Navigate to="/profile"/> : <Login />}/>
+        <Route path={"/profile"} element={!select.user ? <Navigate to="/login"/> : <Profile />}/>
       </Routes>
           {select ? <></>:null}
       {activeModal === "basket" && <Basket />}

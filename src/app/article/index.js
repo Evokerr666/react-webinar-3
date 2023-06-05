@@ -24,7 +24,7 @@ function Article() {
   const select = useSelector(state => ({
     article: state.article.data,
     waiting: state.article.waiting,
-    user: state.profile.data,
+    user: state.auth.data,
   }));
 
   // Функция для локализации текстов
@@ -34,12 +34,12 @@ function Article() {
     // Добавление в корзину
     addToBasket: useCallback(_id => store.actions.basket.addToBasket(_id), [store]),
     // Выход
-    signOut: useCallback(() => store.actions.profile.signOut(), [store]),
+    signOut: useCallback(() => store.actions.auth.signOut(), [store]),
   }
 
   return (
     <PageLayout>
-      <AuthBar user={select.user} signOut={callbacks.signOut} profileLink={`/profile/${select.user?._id}`} loginLink={`/login`} t={t}/>
+      <AuthBar user={select.user} signOut={callbacks.signOut} profileLink={`/profile`} loginLink={`/login`} t={t}/>
       <Head title={select.article.title}>
         <LocaleSelect/>
       </Head>

@@ -3,7 +3,7 @@ import StoreModule from "../module";
 /**
  * Информация о пользователе
  */
-class ProfileState extends StoreModule {
+class AuthState extends StoreModule {
   initState() {
     return {
       data: null,
@@ -85,43 +85,42 @@ class ProfileState extends StoreModule {
 
   //Получение пользователя по токену
   async getUserById() {
-    if (!this.getState().data) {
-      this.setState({
-        ...this.getState(),
-        waiting: true,
+    this.setState({
+      ...this.getState(),
+      waiting: true,
+    });
+    try {
+      const token = localStorage.getItem("userToken");
+      const response = await fetch("/api/v1/users/self", {
+        headers: {
+          "Content-Type": "application/json",
+          "X-Token": token,
+        },
       });
-      try {
+      const json = await response.json();
+      if (!response.ok) {
+        throw json.error.data.issues;
+      } else {
         const token = localStorage.getItem("userToken");
-        const response = await fetch("/api/v1/users/self", {
-          headers: {
-            "Content-Type": "application/json",
-            "X-Token": token,
-          },
-        });
-        const json = await response.json();
-        if (!response.ok) {
-          throw json.error.data.issues;
-        } else {
-          const token = localStorage.getItem("userToken");
-          if (!token) {
-            localStorage.setItem("userToken", json.result.token);
-          }
-          this.setState(
-            {
-              data: json.result,
-              waiting: false,
-            },
-            "Загружен профиль по токену из АПИ"
-          );
+        if (!token) {
+          localStorage.setItem("userToken", json.result.token);
         }
-      } catch (e) {
-        this.setState({
-          data: null,
-          waiting: false,
-        });
+        this.setState(
+          {
+            data: json.result,
+            waiting: false,
+          },
+          "Загружен профиль по токену из АПИ"
+        );
       }
+    } catch (e) {
+      this.setState({
+        data: null,
+        waiting: false,
+      });
     }
-  }
+  
+}
 
 //Сброс ошибки
  resetError() {
@@ -135,4 +134,4 @@ class ProfileState extends StoreModule {
 
 }
 
-export default ProfileState;
+export default AuthState;

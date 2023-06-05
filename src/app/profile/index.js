@@ -10,12 +10,14 @@ import Navigation from "../../containers/navigation";
 import LocaleSelect from "../../containers/locale-select";
 import AuthBar from "../../components/auth-bar";
 import ProfileCard from "../../components/profile-card";
+import Spinner from "../../components/spinner";
 
 function Profile() {
   const store = useStore();
   const navigate = useNavigate();
   useInit(
-    () => {
+      () => {
+      store.actions.auth.getUserById();
       const token = localStorage.getItem("userToken");
       if (!token && !select.user) {
         navigate("/login");
@@ -26,13 +28,13 @@ function Profile() {
   );
 
   const select = useSelector((state) => ({
-    user: state.profile.data,
-    waiting: state.profile.waiting,
+    user: state.auth.data,
+    waiting: state.auth.waiting,
   }));
 
   const callbacks = {
     // Выход
-    signOut: useCallback(() => store.actions.profile.signOut(), [store]),
+    signOut: useCallback(() => store.actions.auth.signOut(), [store]),
   };
 
   // Функция для локализации текстов
@@ -43,7 +45,7 @@ function Profile() {
       <AuthBar
         user={select.user}
         signOut={callbacks.signOut}
-        profileLink={`/profile/${select.user?._id}`}
+        profileLink={`/profile`}
         loginLink={`/login`}
         t={t}
       />
@@ -51,7 +53,9 @@ function Profile() {
         <LocaleSelect />
       </Head>
       <Navigation />
-      <ProfileCard user={select.user} t={t} />
+      <Spinner active={select.waiting}>
+        <ProfileCard user={select.user} t={t} />
+      </Spinner>
     </PageLayout>
   );
 }

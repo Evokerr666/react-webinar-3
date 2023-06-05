@@ -13,18 +13,18 @@ import useSelector from '../../hooks/use-selector';
 function Login() {
   const store = useStore();
   useInit(() => {
-    store.actions.profile.resetError();
+    store.actions.auth.resetError();
   }, [], true);
   const select = useSelector(state => ({
-    errors: state.profile.errors,
-    user: state.profile.data,
+    errors: state.auth.errors,
+    user: state.auth.data,
   }));
 
   const callbacks = {
     // Выход
-    signOut: useCallback(() => store.actions.profile.signOut(), [store]),
+    signOut: useCallback(() => store.actions.auth.signOut(), [store]),
     // Авторизация
-    signIn: useCallback((authInfo, callbackBySuccess) => store.actions.profile.signIn(authInfo, callbackBySuccess), [store]),
+    signIn: useCallback((authInfo, callbackBySuccess) => store.actions.auth.signIn(authInfo, callbackBySuccess), [store]),
   }
 
   // Функция для локализации текстов
@@ -32,12 +32,12 @@ function Login() {
 
   return (
     <PageLayout>
-      <AuthBar user={select.user} signOut={callbacks.signOut} profileLink={`/profile/${select.user?._id}`} loginLink={`/login`} t={t}/>
+      <AuthBar user={select.user} signOut={callbacks.signOut} profileLink={`/profile`} loginLink={`/login`} t={t}/>
       <Head title={t('title')}>
         <LocaleSelect/>
       </Head>
       <Navigation />
-        <Auth onLogIn={callbacks.signIn} t={t} errors={select.errors}/>
+      <Auth onLogIn={callbacks.signIn} t={t} errors={select.errors}/>
     </PageLayout>
   );
 }

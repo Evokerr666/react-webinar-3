@@ -20,12 +20,12 @@ function Main() {
 
   const select = useSelector(state => ({
     waiting: state.article.waiting,
-    user: state.profile.data,
+    user: state.auth.data,
   }));
 
   const callbacks = {
     // Выход
-    signOut: useCallback(() => store.actions.profile.signOut(), [store]),
+    signOut: useCallback(() => store.actions.auth.signOut(), [store]),
   }
 
   // Функция для локализации текстов
@@ -33,7 +33,7 @@ function Main() {
 
   return (
     <PageLayout>
-      <AuthBar user={select.user} signOut={callbacks.signOut} profileLink={`/profile/${select.user?._id}`} loginLink={`/login`} t={t}/>
+      <AuthBar user={select.user} signOut={callbacks.signOut} profileLink={`/profile`} loginLink={`/login`} t={t}/>
       <Head title={t('title')}>
         <LocaleSelect/>
       </Head>
