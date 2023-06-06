@@ -6,10 +6,18 @@ import StoreModule from "../module";
 class AuthState extends StoreModule {
   initState() {
     return {
-      data: null,
       waiting: false, // признак ожидания загрузки
       errors: [],
+      userName: '',
     };
+  }
+
+  initUserFromStorage() {
+    const userName = localStorage.getItem('userName')
+    this.setState({
+      ...this.getState(),
+      userName: userName || '',
+    });
   }
 
   async signIn(authInfo, callbackBySuccess) {
@@ -30,16 +38,17 @@ class AuthState extends StoreModule {
         },
       });
       const json = await response.json();
+      console.log('login json.result', json.result);
       if (!response.ok) {
         // Поймали ошибку
         throw json.error.data.issues;
       } else {
         // Получили токен
         localStorage.setItem("userToken", json.result.token);
+        localStorage.setItem("userName", json.result.user.profile.name);
         callbackBySuccess();
         this.setState(
           {
-            data: json.result.user,
             waiting: false,
           },
           "Загружен профиль из АПИ"
@@ -47,7 +56,6 @@ class AuthState extends StoreModule {
       }
     } catch (e) {
       this.setState({
-        data: null,
         waiting: false,
         errors: e,
       });
@@ -70,57 +78,19 @@ class AuthState extends StoreModule {
         },
       });
       localStorage.removeItem("userToken");
+      localStorage.removeItem("userName");
       this.setState({
         ...this.getState(),
-        data: null,
       });
     } catch (error) {
     } finally {
       this.setState({
         ...this.getState(),
         waiting: false,
+        userName: '',
       });
     }
   }
-
-  //Получение пользователя по токену
-  async getUserById() {
-    this.setState({
-      ...this.getState(),
-      waiting: true,
-    });
-    try {
-      const token = localStorage.getItem("userToken");
-      const response = await fetch("/api/v1/users/self", {
-        headers: {
-          "Content-Type": "application/json",
-          "X-Token": token,
-        },
-      });
-      const json = await response.json();
-      if (!response.ok) {
-        throw json.error.data.issues;
-      } else {
-        const token = localStorage.getItem("userToken");
-        if (!token) {
-          localStorage.setItem("userToken", json.result.token);
-        }
-        this.setState(
-          {
-            data: json.result,
-            waiting: false,
-          },
-          "Загружен профиль по токену из АПИ"
-        );
-      }
-    } catch (e) {
-      this.setState({
-        data: null,
-        waiting: false,
-      });
-    }
-  
-}
 
 //Сброс ошибки
  resetError() {

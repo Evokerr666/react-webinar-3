@@ -14,13 +14,14 @@ import useSelector from '../../hooks/use-selector';
 function Main() {
   const store = useStore();
   useInit(() => {
+    store.actions.auth.initUserFromStorage();
     store.actions.catalog.initParams();
     store.actions.category.getCategory();
   }, [], true);
 
   const select = useSelector(state => ({
     waiting: state.article.waiting,
-    user: state.auth.data,
+    user: state.auth.userName,
   }));
 
   const callbacks = {

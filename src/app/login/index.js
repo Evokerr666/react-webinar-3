@@ -9,15 +9,21 @@ import LocaleSelect from "../../containers/locale-select";
 import Auth from '../../components/auth';
 import AuthBar from '../../components/auth-bar';
 import useSelector from '../../hooks/use-selector';
+import { useNavigate } from 'react-router-dom';
 
 function Login() {
   const store = useStore();
+  const navigate = useNavigate();
   useInit(() => {
+    if (select.user) {
+      navigate('/profile', { replace: true })
+    }
+    store.actions.auth.initUserFromStorage();
     store.actions.auth.resetError();
   }, [], true);
   const select = useSelector(state => ({
     errors: state.auth.errors,
-    user: state.auth.data,
+    user: state.auth.userName,
   }));
 
   const callbacks = {

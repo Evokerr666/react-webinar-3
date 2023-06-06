@@ -10,7 +10,7 @@ function AuthBar(props) {
     <div className={cn()}>
       {props.user ? (
         <Link to={props.profileLink}>
-          <span className={cn("user")}>{props.user?.profile.name}</span>
+          <span className={cn("user")}>{props.user}</span>
         </Link>
       ) : null}
       {props.user ? (
@@ -28,7 +28,7 @@ function AuthBar(props) {
 
 AuthBar.propTypes = {
   signOut: PropTypes.func,
-  user: PropTypes.object,
+  user: PropTypes.string,
   t: PropTypes.func,
   profileLink: PropTypes.string,
   loginLink: PropTypes.string,

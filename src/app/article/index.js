@@ -18,13 +18,14 @@ function Article() {
   // Параметры из пути /articles/:id
   const params = useParams();
   useInit(() => {
+    store.actions.auth.initUserFromStorage();
     store.actions.article.load(params.id);
   }, [params.id]);
 
   const select = useSelector(state => ({
     article: state.article.data,
     waiting: state.article.waiting,
-    user: state.auth.data,
+    user: state.auth.userName,
   }));
 
   // Функция для локализации текстов

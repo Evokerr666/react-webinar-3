@@ -1,5 +1,4 @@
 import { memo, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
 import useStore from "../../hooks/use-store";
 import useSelector from "../../hooks/use-selector";
 import useTranslate from "../../hooks/use-translate";
@@ -14,22 +13,19 @@ import Spinner from "../../components/spinner";
 
 function Profile() {
   const store = useStore();
-  const navigate = useNavigate();
   useInit(
       () => {
-      store.actions.auth.getUserById();
-      const token = localStorage.getItem("userToken");
-      if (!token && !select.user) {
-        navigate("/login");
-      }
+      store.actions.auth.initUserFromStorage();
+      store.actions.profile.getUserById();
     },
     [],
     true
   );
 
   const select = useSelector((state) => ({
-    user: state.auth.data,
+    user: state.auth.userName,
     waiting: state.auth.waiting,
+    userInfo: state.profile.data,
   }));
 
   const callbacks = {
@@ -54,7 +50,7 @@ function Profile() {
       </Head>
       <Navigation />
       <Spinner active={select.waiting}>
-        <ProfileCard user={select.user} t={t} />
+        <ProfileCard user={select.userInfo} t={t} />
       </Spinner>
     </PageLayout>
   );
