@@ -29,7 +29,6 @@ function Article() {
     article: state.article.data,
     waiting: state.article.waiting,
   }), shallowequal); // Нужно указать функцию для сравнения свойства объекта, так как хуком вернули объект
-  console.log('Article Select',select);
   const {t} = useTranslate();
   const callbacks = {
     // Добавление в корзину
@@ -45,8 +44,8 @@ function Article() {
       <Navigation/>
       <Spinner active={select.waiting}>
         <ArticleCard article={select.article} onAdd={callbacks.addToBasket} t={t}/>
-        <ArticleComments/>
       </Spinner>
+      <ArticleComments/>
     </PageLayout>
   );
 }

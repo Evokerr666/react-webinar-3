@@ -1,33 +1,34 @@
-// Начальное состояние
 const initialState = {
-  comments: [],
-  waiting: false, // признак ожидания загрузки
-  newComment: {},
-}
+  data: {},
+  waiting: false,
+};
 
-// Обработчик действий
 function reducer(state = initialState, action) {
   switch (action.type) {
-    case "comments/get-start":
-      return { ...state, comments: [], waiting: true};
+    case "comments/getComments-start":
+      return { ...state, data: {}, waiting: true };
+    case "comments/getComments-success":
+      return {
+        ...state,
+        data: action.payload.data,
+        waiting: false,
+      };
+    case "comments/getComments-error":
+      return { ...state, data: {}, waiting: false };
+    case "comments/postComments-start":
+      return { ...state, waiting: true };
+    case "comments/postComments-success":
+      return {
+        ...state,
+        data: {
+          items: [...state.data.items, action.payload.data],
+        },
 
-    case "comments/get-success":
-      return { ...state, comments: action.payload.comments, waiting: false};
-
-    case "comments/get-error":
-      return { ...state, comments: [], waiting: false};
-    
-    /* case "comments/post-start":
-      return { ...state, waiting: true};
-
-    case "comments/post-success":
-      return { ...state, newComment: action.payload.data, waiting: false};
-
-    case "comments/post-error":
-      return { ...state, waiting: false}; */
-
+        waiting: false,
+      };
+    case "comments/postComments-error":
+      return { ...state, waiting: false };
     default:
-      // Нет изменений
       return state;
   }
 }

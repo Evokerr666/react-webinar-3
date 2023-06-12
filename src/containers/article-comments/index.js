@@ -1,71 +1,128 @@
-import {memo, useCallback, useMemo} from "react";
-import useStore from "../../hooks/use-store";
-import useSelector from "../../hooks/use-selector";
-import useTranslate from "../../hooks/use-translate";
-import useInit from "../../hooks/use-init";
-import { useDispatch, useSelector as useSelectorRedux } from "react-redux";
-import Spinner from "../../components/spinner";
-import ArticleCommentsSignin from "../../components/article-comments-signin";
+import { memo, useCallback, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import useInit from '../../hooks/use-init';
+import useSelector from '../../hooks/use-selector';
+import useTranslate from '../../hooks/use-translate';
+import { useSelector as useSelectorRedux } from 'react-redux/es/hooks/useSelector';
+import shallowequal from 'shallowequal';
 import commentsActions from '../../store-redux/comments/actions';
-import Comment from "../../components/comment";
-import { useParams } from "react-router-dom";
-import CommentsList from "../../components/comments-list";
-import listToTree from "../../utils/list-to-tree";
-import treeToList from "../../utils/tree-to-list";
-import shallowequal from "shallowequal";
-
+import listToTree from '../../utils/list-to-tree';
+import Spinner from '../../components/spinner';
+import CommentsLayout from '../../components/comments-layout';
+import CommentsHeader from '../../components/comments-header';
+import CommentsLogin from '../../components/comments-login';
+import CommentsList from '../../components/comments-list';
+import CommentsItem from '../../components/comments-item';
+import CommentsCreate from '../../components/comments-create';
 
 function ArticleComments() {
+
   const params = useParams();
   const dispatch = useDispatch();
-  useInit(() => {
-    dispatch(commentsActions.getComments(params.id))
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useInit(async () => {
+    dispatch(commentsActions.getComments(params.id));
   }, [params.id]);
-  const selectRedux = useSelectorRedux(state =>({
-    comments: state.comments.comments,
-    waiting: state.comments.waiting,
-/*     newComment: state.comments.newComment, */
-  }), shallowequal);
-  
-  const select = useSelector(state => ({
+
+  const selectStore = useSelector(state => ({
     exists: state.session.exists,
-    waiting: state.session.waiting,
-    user: state.session.user.profile?.name
+    userId: state.session.user._id,
   }));
-  console.log(select);
+
+  const selectRedux = useSelectorRedux(state => ({
+    comments: state.comments.data,
+    waiting: state.comments.waiting,
+  }), shallowequal);
+  const [commentId, setCommentId] = useState('');
+  const [text, setText] = useState('');
   
-  console.log('Redux Select comments', selectRedux.comments);
   const callbacks = {
-    postComment: useCallback((id, text, type) => dispatch(commentsActions.postComment(id, text, type)), []),
-  }
-
-  const comments = useMemo(() => treeToList(listToTree(selectRedux.comments), (item, level) => (
-    {_id: item._id, level, text: item.text, author: item.author.profile.name, date: item.dateCreate}
-  )), [selectRedux.comments])
-
-  console.log('comments', comments);
+    getCommentsList: useCallback(() => {
+      if (selectRedux.comments.items) {
+        return listToTree(selectRedux.comments.items, "article");
+      }
+    }, [selectRedux.comments]),
+    onLogin: useCallback(() => {
+      navigate("/login", { state: { back: location.pathname } });
+    }, [location.pathname]),
+    onPost: useCallback(
+      (text, parent) => {
+        dispatch(commentsActions.postComments(text, parent));
+        setCommentId("");
+        setText("");
+      },
+      [text]
+    ),
+    onChange: useCallback((value) => {
+      setText(value);
+    }, []),
+    onChangeId: useCallback((value) => {
+      setCommentId(value);
+    }, []),
+  };
 
   const {t} = useTranslate();
 
   const renders = {
-    item: useCallback(comment => (
-      <Comment
-      comment={comment}
-      user={select.user}
-      postComment={callbacks.postComment}
-      labelAnswer={t('comment.answer')}
-      />
-    ), [comments, t]),
+    getComments: useCallback((item) => (
+        <CommentsItem
+            item={item}
+            exists={selectStore.exists}
+            userId={selectStore.userId}
+            commentId={commentId}
+            onLogin={callbacks.onLogin}
+            onPost={callbacks.onPost}
+            onChange={callbacks.onChange}
+            onChangeId={callbacks.onChangeId}
+            labelAnswer={t('comments-item.answer')}
+        />
+    ), [
+      selectRedux.comments,
+      selectStore.exists,
+      commentId,
+      callbacks.onLogin,
+      callbacks.onPost,
+      callbacks.onChange,
+      callbacks.onChangeId,
+      t
+    ]),
+  };
+  
+  const renderComponent = () => {
+    if (!commentId && !selectStore.exists) {
+      return <CommentsLogin onLogin={callbacks.onLogin} />;
+    } else if (!commentId) {
+      return (
+        <CommentsCreate
+          value={text}
+          id={params.id}
+          onPost={callbacks.onPost}
+          onChange={callbacks.onChange}
+        />
+      );
+    }
   };
 
   return (
-    <>
-    {/* <ArticleCommentsSignin /> */}
-    <Spinner active={select.waiting}>
-      <CommentsList list={selectRedux.comments} renderItem={renders.item}/>
-    </Spinner>
-    </>
+    <CommentsLayout>
+      <Spinner active={selectRedux.waiting}>
+        <CommentsHeader
+          labelTitle={t("comments-header.title")}
+          commentsCount={selectRedux.comments.items?.length}
+        />
+        {selectRedux.comments.items?.length ? (
+          <CommentsList
+            list={callbacks.getCommentsList()}
+            renderComment={renders.getComments}
+          />
+        ) : null} 
+        {renderComponent()}
+      </Spinner>
+    </CommentsLayout>
   );
-} 
+}
 
 export default memo(ArticleComments);

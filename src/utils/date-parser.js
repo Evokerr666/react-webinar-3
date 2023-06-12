@@ -1,19 +1,14 @@
-/**
- * Форматирование даты
- * @param date {string}
- * @returns {String}
- */
-/* const date = '2023-06-08T23:05:28.261Z' */
-export default function dateParser(date) {
-  const parseDate = new Date(date)
-    .toLocaleString("ru-Ru", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "numeric",
-      minute: "numeric",
-    }).replace("г.,", "в");
-
-  return parseDate;
+export default function dateParser(
+  value,
+  locale = "ru-RU",
+  options = {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  }
+) {
+  const formatDate = new Date(value);
+  return new Intl.DateTimeFormat(locale, options).format(formatDate).replace('г. в','в');
 }
-/* console.log(dateParser(date)); */

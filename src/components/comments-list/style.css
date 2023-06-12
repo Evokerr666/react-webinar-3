@@ -1,8 +1,9 @@
-.List{
-
+.CommentList {
+    box-sizing: border-box;
 }
 
-.List-comment {
-
+.CommentList-comment {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 30px;    
 }
-

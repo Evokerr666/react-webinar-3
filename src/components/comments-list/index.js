@@ -1,28 +1,31 @@
-import {memo} from "react";
+import { memo } from "react";
+import { cn as bem } from '@bem-react/classname';
 import PropTypes from 'prop-types';
 import './style.css';
 
-function CommentsList({list, renderItem}){
+function CommentList({list, renderComment}){
+
+  const cn = bem('CommentList');
+
   return (
-    <div className='List'>{
-      list.map(item =>
-        <div key={item._id} className='List-comment'>
-          {renderItem(item)}
-        </div>
-      )}
-    </div>
+      <div className={cn()}>
+        {list.map(comment =>
+          <div key={comment._id} className={cn('comment')}>
+            {renderComment(comment)}
+          </div>
+        )}
+      </div>
   )
 }
 
-/* CommentsList.propTypes = {
+CommentList.propTypes = {
   list: PropTypes.arrayOf(PropTypes.shape({
-    _id: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
-  })).isRequired,
-  renderItem: PropTypes.func,
+    _id: PropTypes.string})).isRequired,
+    renderComment: PropTypes.func,
 };
 
-CommentsList.defaultProps = {
-  renderItem: (item) => {},
-} */
+CommentList.defaultProps = {
+  renderComment: (comment) => {},
+}
 
-export default memo(CommentsList);
+export default memo(CommentList);

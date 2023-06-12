@@ -1,56 +1,34 @@
 export default {
-  /**
-   * Загрузка комментариев
-   * @param id
-   * @return {Function}
-   */
   getComments: (id) => {
     return async (dispatch, getState, services) => {
-      
-      dispatch({ type: "comments/get-start" });
+      dispatch({type: 'comments/getComments-start'});
       try {
         const res = await services.api.request({
-          url: `/api/v1/comments?search[parent]=${id}&limit=*&fields=items(_id,text,dateCreate,author(profile(name)),parent(_id,_type)),count`,
-        });console.log('ACTION');
-        dispatch({
-          type: "comments/get-success",
-          payload: { comments: res.data.result.items },
+          url: `api/v1/comments?search[parent]=${id}&limit=*&fields=items(_id,text,dateCreate,author(profile(name)),parent(_id,_type,_tree)),count`
         });
+        dispatch({type: 'comments/getComments-success', payload: {data: res.data.result}});
       } catch (e) {
-        //Ошибка загрузки
-        console.log('Ошибка', e);
-        dispatch({ type: "comments/get-error" });
+        dispatch({type: 'comments/getComments-error'});
       }
-    };
+    }
   },
 
-  /* postComment: (id, text, type) => {
+  postComments: (text, parent) => {
     return async (dispatch, getState, services) => {
-      const token = localStorage.getItem("token");
-      if (token) {
-        try {
-          dispatch({ type: "comments/post-start" });
-
-          const res = await services.api.request({
-            url: '/api/v1/comments/',
-            method: 'POST',
-            body: JSON.stringify({
-              'text': text,
-              'parent': {
-                '_id': id,
-                '_type': type
-              }
-            })
-          });
-          dispatch({
-            type: "comments/load-success",
-            payload: { data: res.data.result },
-          });
-        } catch (e) {
-          //Ошибка загрузки
-          dispatch({ type: "comments/post-error" });
-        }
+      dispatch({type: 'comments/postComments-start'});
+      try {
+        const res = await services.api.request({
+          url: `api/v1/comments?fields=*,author(profile)`,
+          method: 'POST',
+          body: JSON.stringify({
+            text,
+            parent: parent
+          })
+        });
+        dispatch({type: 'comments/postComments-success', payload: {data: res.data.result}});
+      } catch (e) {
+        dispatch({type: 'comments/postComments-error'});
       }
-    };
-  }, */
-};
+    }
+  }
+}
