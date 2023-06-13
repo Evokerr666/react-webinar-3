@@ -40,7 +40,9 @@ function CommentsCreate({padding, ...props}) {
         onChange={onHandleChange}
       />
       <div className={cn("controls")}>
-        <button onClick={onHandleSubmit}>{t("comments-create.send")}</button>
+        <button onClick={onHandleSubmit} disabled={!value?.trim()}>
+          {t("comments-create.send")}
+        </button>
         {isNestedLevel ? (
           <button onClick={onHandleClick}>{t("comments-create.cancel")}</button>
         ) : null}
