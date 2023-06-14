@@ -8,6 +8,7 @@ import * as translations from './translations';
  * @returns {String} Переведенный текст
  */
 export default function translate(lang, text, plural) {
+  console.log('LANG',lang);
   let result = translations[lang] && (text in translations[lang])
     ? translations[lang][text]
     : text;
@@ -18,6 +19,6 @@ export default function translate(lang, text, plural) {
       result = result[key];
     }
   }
-
+  console.log('result',result);
   return result;
 }

@@ -5,6 +5,7 @@ import numberFormat from "../../utils/number-format";
 import './style.css';
 
 function ArticleCard({article, onAdd, t}) {
+  console.log('T ARTICLE',t('article.add'));
   const cn = bem('ArticleCard');
   return (
     <div className={cn()}>
