@@ -4,9 +4,6 @@ class I18nService {
   constructor(services, config = {}) {
     this.services = services;
     this.config = config;
-    /* this.defaultHeaders = {
-      "Accept-Language": "ru",
-    }; */
     this.listeners = [];
     this.lang = "ru";
   }
@@ -26,7 +23,6 @@ class I18nService {
         result = result[key];
       }
     }
-    console.log("result", result);
     return result;
   }
   subscribe(listener) {

@@ -29,29 +29,27 @@ function CatalogFilter() {
     // Фильтр по категории
     onCategory: useCallback(category => store.actions.catalog.setParams({category, page: 1}), [store]),
   };
-
+  const {t} = useTranslate();
   const options = {
     sort: useMemo(() => ([
-      {value: 'order', title: 'По порядку'},
-      {value: 'title.ru', title: 'По именованию'},
-      {value: '-price', title: 'Сначала дорогие'},
-      {value: 'edition', title: 'Древние'},
-    ]), []),
+      {value: 'order', title: t("catalog-filter.order")},
+      {value: 'title.ru', title: t("catalog-filter.title")},
+      {value: '-price', title: t("catalog-filter.lowPrice")},
+      {value: 'edition', title: t("catalog-filter.edition")},
+    ]), [t]),
     categories: useMemo(() => ([
-      {value: '', title: 'Все'},
+      {value: '', title: t("catalog-filter.all")},
       ...treeToList(listToTree(select.categories), (item, level) => (
         {value: item._id, title: '- '.repeat(level) + item.title}
       ))
     ]), [select.categories]),
   };
 
-  const {t} = useTranslate();
-
   return (
     <SideLayout padding='medium'>
       <Select options={options.categories} value={select.category} onChange={callbacks.onCategory}/>
       <Select options={options.sort} value={select.sort} onChange={callbacks.onSort}/>
-      <Input value={select.query} onChange={callbacks.onSearch} placeholder={'Поиск'}
+      <Input value={select.query} onChange={callbacks.onSearch} placeholder={t("catalog-filter.search")}
              delay={1000}/>
       <button onClick={callbacks.onReset}>{t('filter.reset')}</button>
     </SideLayout>
